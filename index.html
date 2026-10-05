@@ -390,7 +390,13 @@ function askInput(q) {
       if (q.inputmode) field.inputMode = q.inputmode;
       if (q.type === "number") field.inputMode = "numeric";
       if (q.id === "nome") field.autocomplete = "name";
-      if (q.type === "tel") field.autocomplete = "tel";
+      if (q.type === "tel") {
+        field.autocomplete = "tel-national";
+        field.inputMode = "numeric";
+        field.maxLength = 15; // "(DD) 9XXXX-XXXX"
+        // máscara: só dígitos, no máximo 11, formatados enquanto digita
+        field.addEventListener("input", () => { field.value = maskPhone(field.value); });
+      }
       field.placeholder = q.placeholder || "Digite sua resposta…";
       field.setAttribute("aria-label", q.label);
       const btn = document.createElement("button");
@@ -425,10 +431,20 @@ function askInput(q) {
   });
 }
 
+// (DD) 9XXXX-XXXX — ignora DDI 55 colado no começo e corta tudo além de 11 dígitos
+function maskPhone(raw) {
+  let d = raw.replace(/\D/g, "");
+  if (d.length > 11 && d.startsWith("55")) d = d.slice(2);
+  d = d.slice(0, 11);
+  if (d.length <= 2) return d.length ? `(${d}` : "";
+  if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+}
+
 function validate(q, v) {
   if (!v) return "Por favor, responda para continuar.";
   if (q.min && v.length < q.min) return "Hmm, parece curto demais. Pode conferir?";
-  if (q.type === "tel" && v.replace(/\D/g, "").length < 10) return "Informe o número com DDD.";
+  if (q.type === "tel" && !/^\(([1-9]\d)\) 9\d{4}-\d{4}$/.test(v)) return "Digite o celular com DDD no formato (DD) 9XXXX-XXXX.";
   if (q.type === "number") {
     const n = Number(v);
     if (!Number.isFinite(n) || n < q.minN || n > q.maxN) return "Informe um número válido.";
