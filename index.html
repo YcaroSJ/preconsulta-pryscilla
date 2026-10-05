@@ -165,7 +165,7 @@
   .input-wrap.wide { width: 100%; }
   .input-wrap input, .input-wrap textarea {
     flex: 1; min-width: 0; border: 0; border-radius: var(--radius);
-    padding: 13px 16px; font: inherit; color: #202020; background: #fff;
+    padding: 13px 16px; font: inherit; font-size: 16px; /* 16px evita o zoom automático do iPhone */ color: #202020; background: #fff;
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / .12), 0 2px 4px -2px rgb(0 0 0 / .1);
     outline: 2px solid transparent; transition: outline-color .2s;
     resize: none;
@@ -184,7 +184,7 @@
 
   .choices { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
   .choice {
-    border: 1px solid rgba(227,180,140,.7); border-radius: 999px; padding: 11px 22px;
+    border: 1px solid rgba(227,180,140,.7); border-radius: 999px; padding: 13px 22px; min-height: 44px;
     background: rgba(255,250,245,.12); color: #fff; font: 500 14px "Montserrat", sans-serif;
     backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
     cursor: pointer; box-shadow: 0 4px 14px -6px rgb(0 0 0 / .35);
